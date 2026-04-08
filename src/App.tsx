@@ -632,14 +632,24 @@ export default function App() {
       "h-screen w-screen overflow-hidden flex flex-col transition-colors duration-300",
       theme === 'dark' ? "bg-slate-950 text-slate-100" : "bg-slate-50 text-slate-900"
     )}>
-      <Group orientation="horizontal" className="flex-1">
-        <Panel defaultSize={25} minSize={15} maxSize={40}>
+      <Group 
+        id="main-layout"
+        orientation="horizontal" 
+        className="flex-1"
+        resizeTargetMinimumSize={{ coarse: 20, fine: 10 }}
+      >
+        <Panel id="left-panel" defaultSize="30" minSize="20" maxSize="45">
           <TechnicalSpecSidebar theme={theme} onInjectPrompt={(p) => setPrompt(p)} />
         </Panel>
         
-        <Separator className="w-1 bg-slate-200 dark:bg-slate-800 hover:bg-indigo-500 transition-colors cursor-col-resize" />
+        <Separator 
+          id="separator-1"
+          className="w-2 bg-slate-200 dark:bg-slate-800 hover:bg-indigo-500 transition-colors cursor-col-resize flex items-center justify-center"
+        >
+          <div className="w-px h-8 bg-slate-400/30 dark:bg-slate-600/30 rounded-full pointer-events-none" />
+        </Separator>
         
-        <Panel defaultSize={50} minSize={30}>
+        <Panel id="center-panel" defaultSize="40" minSize="30">
           <div className="h-full flex flex-col overflow-hidden">
             <Header
               theme={theme}
@@ -656,8 +666,8 @@ export default function App() {
               clearAll={clearAll}
             />
             <main className={cn(
-              "flex-1 p-6 w-full overflow-y-auto custom-scrollbar",
-              mode === 'gallery' ? "block" : "flex flex-col gap-6"
+              "flex-1 w-full overflow-y-auto custom-scrollbar",
+              mode === 'gallery' ? "block p-6" : "flex flex-col p-4"
             )}>
         {mode === 'gallery' ? (
           <div className="flex flex-col gap-6">
@@ -804,9 +814,14 @@ export default function App() {
       </div>
       </Panel>
 
-      <Separator className="w-1 bg-slate-200 dark:bg-slate-800 hover:bg-indigo-500 transition-colors cursor-col-resize" />
+      <Separator 
+        id="separator-2"
+        className="w-2 bg-slate-200 dark:bg-slate-800 hover:bg-indigo-500 transition-colors cursor-col-resize flex items-center justify-center"
+      >
+        <div className="w-px h-8 bg-slate-400/30 dark:bg-slate-600/30 rounded-full pointer-events-none" />
+      </Separator>
       
-      <Panel defaultSize={25} minSize={15} maxSize={40}>
+      <Panel id="right-panel" defaultSize="30" minSize="20" maxSize="45">
         <JsonStudioSidebar 
           theme={theme} 
           jsonOutput={jsonOutput} 

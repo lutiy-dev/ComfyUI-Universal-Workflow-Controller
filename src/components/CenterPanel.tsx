@@ -100,7 +100,7 @@ export function CenterPanel({
 
       {/* Render Settings */}
       <div className={cn(
-        "p-4 rounded-xl border shadow-sm grid grid-cols-4 gap-4",
+        "p-4 rounded-xl border shadow-sm grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4",
         theme === 'dark' ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200"
       )}>
         <div className="flex flex-col gap-1">

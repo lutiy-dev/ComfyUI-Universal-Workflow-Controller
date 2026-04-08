@@ -22,7 +22,7 @@ export function JsonStudioSidebar({ theme, jsonOutput, isJsonLoading, onConvert,
 
   return (
     <div className={cn(
-      "h-full flex flex-col border-l",
+      "h-full flex flex-col min-w-[280px]",
       theme === 'dark' ? "bg-slate-900 border-slate-800 text-slate-100" : "bg-white border-slate-200 text-slate-900"
     )}>
       <div className="p-4 border-b border-slate-200 dark:border-slate-800">

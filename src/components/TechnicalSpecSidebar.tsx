@@ -57,7 +57,7 @@ export default function TechnicalSpecSidebar({ theme, onInjectPrompt }: { theme:
 
   return (
     <div className={cn(
-      "h-screen flex flex-col border-r transition-colors",
+      "h-full flex flex-col transition-colors min-w-[280px]",
       theme === 'dark' ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200"
     )}>
       {/* Main Editor Container */}
