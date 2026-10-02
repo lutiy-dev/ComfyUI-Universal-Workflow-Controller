@@ -1,6 +1,6 @@
 # ComfyUI Universal Workflow Controller
 
-**Status:** LAB / VALIDATED; first real Nodes 2.0 runtime test completed with a binding-UX issue, fixed in 0.1.1 and awaiting retest
+**Status:** LAB / TESTED on real current ComfyUI Nodes 2.0. Core Stage Controller, Exclusive Switch, persistence, tab switching, missing-target handling, and Clean Missing passed runtime acceptance. Subgraph-container support is not yet part of the stable claim.
 
 Universal, model-agnostic control nodes for ComfyUI workflows.
 
