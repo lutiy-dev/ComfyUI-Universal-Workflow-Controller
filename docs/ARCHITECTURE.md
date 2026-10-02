@@ -52,11 +52,15 @@ This deliberately avoids unstable path inference and silent rebinding.
 
 ## Selection capture
 
-A potential UX hazard is that clicking a controller could change canvas selection before `Bind Selected` reads it.
+A potential UX hazard is stale selection reuse when a controller is clicked after the canvas selection changes.
 
-The extension stores the current non-controller selection on capture-phase `pointerdown`/`keydown`. `Bind Selected` first reads current selection and falls back to the remembered selection on the same graph.
+In 0.1.1 the controller captures the current non-controller selection locally on its own DOM `pointerdown`, immediately before the control action. The snapshot is overwritten even when the selection is empty, so an older selection cannot be silently reused.
+
+`Bind Selected` first reads the current selection for the controller's graph and otherwise uses only that click-time controller-local snapshot. After a successful bind the snapshot is cleared.
 
 The DOM panel stops pointer propagation so UI interaction does not intentionally alter canvas selection.
+
+Same-controller duplicate target bindings are blocked before mutation. The user must Clear/Rebind the conflicting row explicitly.
 
 ## Mode changes
 
