@@ -9,15 +9,35 @@ Date: 2026-10-02
 - TESTED on real target ComfyUI: NOT YET
 - STABLE: NO (LAB)
 
-## Automated validation
+## GitHub Actions validation
 
-Command:
+Workflow: `.github/workflows/lab-validate.yml`
 
-```bash
-npm test
-```
+Validated commit:
+`e7de23f868055519b74dd9281e25e33ea56e95b2`
 
-Result: **20 / 20 tests PASS**.
+Push run:
+`36983711967`
+
+Result: **SUCCESS**
+
+Environment:
+- GitHub-hosted Ubuntu runner
+- Node.js 22
+- Python 3.12
+
+Validation steps:
+- `npm run check` — PASS
+- `npm test` — PASS
+
+Automated test result:
+- tests: 20
+- pass: 20
+- fail: 0
+- skipped: 0
+- cancelled: 0
+
+## Automated coverage
 
 Coverage includes pure controller logic and a mocked current-frontend adapter:
 - configuration normalization;
@@ -35,24 +55,30 @@ Coverage includes pure controller logic and a mocked current-frontend adapter:
 - Clean Missing cancel/confirm safety;
 - cross-controller overlap diagnostics.
 
-Static command:
+## Static checks
 
 ```bash
 npm run check
 ```
-
-Result: PASS.
 
 Checks:
 - `node --check js/uwc_core.js`;
 - `node --check js/universal_workflow_controller.js`;
 - `python -m py_compile __init__.py`.
 
-Static safety scan: PASS. Runtime/test implementation contains no private Windows paths, API-key literals, model/domain-specific logic, model downloads, telemetry, or network calls.
+Static safety policy:
+- no private Windows paths;
+- no API-key literals;
+- no model/domain-specific control logic;
+- no model downloads;
+- no telemetry;
+- no runtime network dependency;
+- no automatic Queue/Run behavior.
 
 ## Runtime validation still required
 
-A single real acceptance test on the user's latest ComfyUI / latest frontend / Nodes 2.0 is required before marking TESTED. See `START_HERE.md` and `docs/TEST_PLAN.md`.
+One real acceptance test on the user's current ComfyUI / current frontend / Nodes 2.0 is required before marking TESTED.
+See `START_HERE.md` and `docs/TEST_PLAN.md`.
 
 ## Known LAB limitations
 
