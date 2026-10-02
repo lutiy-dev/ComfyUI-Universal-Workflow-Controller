@@ -6,7 +6,7 @@ Date: 2026-10-02
 
 - GENERATED: PASS
 - VALIDATED: PASS
-- REAL NODES 2.0 RUNTIME: PARTIAL — Stage Controller core runtime PASS; Exclusive Switch core runtime PASS; persistence/missing-target acceptance pending
+- REAL NODES 2.0 RUNTIME: PARTIAL — Stage Controller PASS; Exclusive Switch PASS; save/reopen persistence PASS; missing-target/tab-switch acceptance pending
 - FIX FOR RUNTIME ISSUE: IMPLEMENTED + CI VALIDATED
 - RETEST OF 0.1.1 STAGE CONTROLLER: PASS
 - STABLE: NO (LAB)
@@ -144,6 +144,30 @@ Confirmed PASS:
 - no accidental mutation of unrelated Stage Controller bindings was observed in this test.
 
 Exclusive Switch core runtime status: **PASS**.
+
+## Real Nodes 2.0 runtime acceptance — Persistence
+
+Date: 2026-10-02
+
+Observed after saving, closing, and reopening the workflow on the user's current ComfyUI / Nodes 2.0 install.
+
+Confirmed PASS:
+- Stage Controller labels persisted;
+- Stage Controller bindings persisted;
+- Stage Controller per-entry disable modes persisted;
+- Stage target runtime modes remained consistent:
+  - A = ON
+  - B = BYPASSED
+  - C = MUTED;
+- Exclusive Switch labels persisted;
+- Exclusive Switch bindings persisted;
+- Exclusive per-option disable modes persisted;
+- Exclusive active option persisted:
+  - D = BYPASSED
+  - E = MUTED
+  - F = ON.
+
+Save / close / reopen persistence status: **PASS**.
 
 ## Node search focus observation
 
