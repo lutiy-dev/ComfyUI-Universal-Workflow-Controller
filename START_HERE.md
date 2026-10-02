@@ -61,17 +61,18 @@ Create three small independent branches or choose three safe existing branches t
 3. Rename them `A`, `B`, `C`.
 4. Select branch A nodes on the canvas and click `Bind Selected` for A.
 5. Repeat for B and C.
-6. Test ON/OFF with MUTE.
-7. Change one stage OFF mode to BYPASS and test it.
-8. Put A/B/C in different initial modes.
-9. SOLO B.
-10. SOLO C without Restore.
-11. Press Restore.
-12. Verify the exact original A/B/C modes return.
-13. Save workflow, close/reopen it, and verify names/bindings/modes remain valid.
-14. Switch workflow tabs and return; verify state remains valid.
-15. Delete one bound target and verify the controller shows a missing/broken binding without silently rebinding.
-16. Use `Clean Missing` and verify only stale references are removed.
+6. After each bind, verify the row shows the expected target name; use `Select` to confirm the bound node(s) visually.
+7. Test ON/OFF with MUTE.
+8. Change one stage OFF mode to BYPASS and test it.
+9. Put A/B/C in different initial modes.
+10. SOLO B.
+11. SOLO C without Restore.
+12. Press Restore.
+13. Verify the exact original A/B/C modes return.
+14. Save workflow, close/reopen it, and verify names/bindings/modes remain valid.
+15. Switch workflow tabs and return; verify state remains valid.
+16. Delete one bound target and verify the controller shows a missing/broken binding without silently rebinding.
+17. Use `Clean Missing` and verify only stale references are removed.
 
 ### Exclusive Switch
 
@@ -97,6 +98,7 @@ PASS only if all critical actions work and the browser console shows no package-
 Stop and report immediately if:
 - controller nodes do not render in Nodes 2.0;
 - `Bind Selected` binds the wrong nodes;
+- a target already bound to another row in the same controller is accepted instead of being blocked;
 - unregistered nodes change mode;
 - workflow fails to save/reload;
 - ComfyUI throws repeated frontend exceptions;
