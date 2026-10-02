@@ -6,9 +6,9 @@ Date: 2026-10-02
 
 - GENERATED: PASS
 - VALIDATED: PASS
-- REAL NODES 2.0 RUNTIME: PARTIAL — install/render/basic bind passed; first runtime test exposed a binding UX/reliability issue
+- REAL NODES 2.0 RUNTIME: PARTIAL — Stage Controller core runtime PASS; remaining package acceptance pending
 - FIX FOR RUNTIME ISSUE: IMPLEMENTED + CI VALIDATED
-- RETEST OF 0.1.1 ON REAL TARGET: REQUIRED
+- RETEST OF 0.1.1 STAGE CONTROLLER: PASS
 - STABLE: NO (LAB)
 
 ## Runtime finding that triggered 0.1.1
@@ -95,6 +95,37 @@ Static safety policy:
 - no telemetry;
 - no runtime network dependency;
 - no automatic Queue/Run behavior.
+
+## Real Nodes 2.0 runtime acceptance — Stage Controller
+
+Date: 2026-10-02
+
+Observed on the user's current ComfyUI / Nodes 2.0 install after updating to 0.1.1-lab.
+
+Confirmed PASS:
+- install / discovery;
+- Stage Controller render;
+- Bind Selected with correct target labels;
+- same-controller duplicate-binding protection;
+- actual state display: ON / BYPASSED / MUTED;
+- MUTE behavior;
+- BYPASS behavior;
+- SOLO A;
+- repeated SOLO C without intermediate Restore;
+- exact Restore back to the original mixed state:
+  - A = ON
+  - B = BYPASSED
+  - C = MUTED.
+
+Stage Controller core runtime status: **PASS**.
+
+Still required before package TESTED:
+- Universal Exclusive Switch runtime test;
+- Save / Reload persistence;
+- workflow-tab switching persistence;
+- missing/deleted target handling + Clean Missing;
+- multi-controller isolation / overlap warning;
+- subgraph container acceptance if claimed.
 
 ## Runtime validation still required
 
