@@ -1,5 +1,9 @@
 # ComfyUI Universal Workflow Controller
 
+<p align="center">
+  <img src="docs/assets/uwc-banner.svg" alt="ComfyUI Universal Workflow Controller" width="100%" />
+</p>
+
 **Status:** LAB / TESTED on real current ComfyUI Nodes 2.0. Core Stage Controller, Exclusive Switch, persistence, tab switching, missing-target handling, and Clean Missing passed runtime acceptance. Subgraph-container support is not yet part of the stable claim.
 
 Universal, model-agnostic control nodes for ComfyUI workflows.
@@ -93,13 +97,13 @@ The frontend adapter mock also verifies custom-node registration/rendering, Bind
 
 Static validation covers JavaScript syntax and Python shim compilation.
 
-**Real ComfyUI runtime test is still required before status can become TESTED/STABLE.**
+**Real ComfyUI Nodes 2.0 runtime acceptance: PASS for the tested core matrix.** Subgraph-container support remains outside the stable claim until its dedicated runtime test is completed.
 
 ## Repository state
 
-Development branch: `dev/universal-workflow-controller`
+Primary source of truth: `main`
 
-Legacy repository state is preserved at: `archive/ai-render-legacy-2026-10-02`
+Current tested package: `v0.1.1-lab`
 
 ## License
 
