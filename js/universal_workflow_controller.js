@@ -208,6 +208,15 @@ class UWCBaseNode extends (globalThis.LGraphNode ?? globalThis.LiteGraph?.LGraph
     return Math.max(120, 62 + count * 78 + (this._notice ? 34 : 0));
   }
 
+  ensurePanelSize() {
+    const width = Math.max(this.size?.[0] ?? 0, 470);
+    const requiredHeight = this.estimatedHeight() + 36;
+    const currentHeight = this.size?.[1] ?? 0;
+    if (currentHeight < requiredHeight) {
+      try { this.setSize?.([width, requiredHeight]); } catch {}
+    }
+  }
+
   onAdded() {
     CONTROLLERS.add(this);
     window.setTimeout(() => this.render(), 0);
@@ -539,6 +548,7 @@ class UniversalStageController extends UWCBaseNode {
     });
 
     root.style.setProperty("--comfy-widget-min-height", `${this.estimatedHeight()}px`);
+    this.ensurePanelSize();
     this._lastHealthSignature = this._config.entries.map((e) => {
       const h = entryHealth(this.graph, e);
       return `${e.id}:${h.state}:${h.valid}:${h.missing}`;
@@ -640,6 +650,7 @@ class UniversalExclusiveSwitch extends UWCBaseNode {
     });
 
     root.style.setProperty("--comfy-widget-min-height", `${this.estimatedHeight()}px`);
+    this.ensurePanelSize();
     this._lastHealthSignature = this._config.entries.map((e) => {
       const h = entryHealth(this.graph, e);
       return `${e.id}:${h.state}:${h.valid}:${h.missing}`;

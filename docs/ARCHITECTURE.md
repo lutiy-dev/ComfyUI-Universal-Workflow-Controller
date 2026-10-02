@@ -5,10 +5,11 @@
 Current ComfyUI frontend / Nodes 2.0, frontend-first.
 
 The package uses:
-- `app.registerExtension`;
+- ComfyUI frontend `scripts/app.js` access, then `app.registerExtension`;
 - `registerCustomNodes`;
 - frontend-only `LGraphNode` virtual nodes;
 - `addDOMWidget` for a compact DOM-based control surface;
+- dynamic minimum-height growth so an arbitrary number of entries is not clipped;
 - current node `mode` semantics: `ALWAYS = 0`, `NEVER = 2`, `BYPASS = 4`;
 - current canonical canvas selection when available (`canvas.selectedItems`) with a compatibility fallback to `selected_nodes`.
 
