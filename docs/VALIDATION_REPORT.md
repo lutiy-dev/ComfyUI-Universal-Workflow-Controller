@@ -127,6 +127,17 @@ Still required before package TESTED:
 - multi-controller isolation / overlap warning;
 - subgraph container acceptance if claimed.
 
+## Node search focus observation
+
+During runtime testing, the Nodes 2.0 `Add a node…` dialog temporarily appeared unable to accept text input while mouse/scroll interactions still worked.
+
+Follow-up checks confirmed:
+- ordinary ComfyUI numeric/text entry worked;
+- explicitly clicking the search input restored typing;
+- no UWC code change was required.
+
+Conclusion: no confirmed global keyboard capture or persistent input lock attributable to UWC. Treat as a transient/autofocus UI observation unless reproducible.
+
 ## Runtime validation still required
 
 Retest 0.1.1 on the user's current ComfyUI / current frontend / Nodes 2.0 before marking TESTED.
