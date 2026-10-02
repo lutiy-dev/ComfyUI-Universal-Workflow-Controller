@@ -1,20 +1,103 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# ComfyUI Universal Workflow Controller
 
-# Run and deploy your AI Studio app
+**Status:** LAB / VALIDATED (not yet runtime-tested on the target ComfyUI install)
 
-This contains everything you need to run your app locally.
+Universal, model-agnostic control nodes for ComfyUI workflows.
 
-View your app in AI Studio: https://ai.studio/apps/958d032d-a4fa-43fd-b5d8-4164955756fe
+The package is designed for current **ComfyUI / ComfyUI Frontend / Nodes 2.0** and intentionally knows nothing about any model, renderer, workflow domain, or project. Users create entries, name them, bind selected nodes/subgraph container nodes, and control execution modes centrally.
 
-## Run Locally
+## Included nodes
 
-**Prerequisites:**  Node.js
+### Universal Stage Controller
 
+A configurable list of independent stages.
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+Per stage:
+- custom name;
+- `Bind Selected` / rebind;
+- ON/OFF toggle;
+- OFF mode: `MUTE` (`NEVER`) or `BYPASS`;
+- `SOLO`;
+- exact in-session `RESTORE`;
+- reorder;
+- clear binding;
+- remove entry;
+- target count and broken-binding status.
+
+Controller actions:
+- `+ Stage`;
+- `All On`;
+- `All Off`;
+- `Restore`;
+- `Clean Missing`.
+
+### Universal Exclusive Switch
+
+A configurable list of mutually exclusive options.
+
+Selecting one option:
+- activates all targets bound to that option;
+- disables all other registered options using each option's configured `MUTE` or `BYPASS` mode.
+
+## Binding model
+
+1. Select one or more target nodes on the canvas.
+2. Click `Bind Selected` on the desired controller entry.
+3. The controller stores workflow-local node IDs.
+
+Binding is intentionally **not** based on:
+- model type;
+- node title;
+- group color;
+- node coordinates;
+- external files or machine paths.
+
+A selected Nodes 2.0 subgraph container is treated as a single shallow target. Muting/bypassing it changes the container mode, matching current ComfyUI selection-mode behavior. Cross-graph binding to nodes *inside* another subgraph is not claimed in this LAB release.
+
+## Safety / scope
+
+The package:
+- does not download models;
+- has no network calls;
+- has no telemetry;
+- has no API keys;
+- has no third-party Python dependencies;
+- does not rewrite workflow topology;
+- changes only the `mode` of explicitly bound target nodes;
+- does not automatically Queue/Run workflows.
+
+Multiple controllers may coexist. Overlapping bindings are detected and shown as warnings. No ownership is invented: the last explicit user action wins.
+
+## Installation
+
+See [START_HERE.md](START_HERE.md).
+
+## Current validation status
+
+Automated pure-logic tests cover:
+- binding deduplication;
+- missing targets;
+- ON/OFF;
+- MUTE;
+- BYPASS;
+- SOLO;
+- repeated SOLO;
+- exact RESTORE;
+- Exclusive A/B/C behavior;
+- deterministic selected-entry precedence on overlap;
+- configuration JSON round-trip;
+- multi-controller isolation for non-overlapping bindings.
+
+Static validation covers JavaScript syntax and Python shim compilation.
+
+**Real ComfyUI runtime test is still required before status can become TESTED/STABLE.**
+
+## Repository state
+
+Development branch: `dev/universal-workflow-controller`
+
+Legacy repository state is preserved at: `archive/ai-render-legacy-2026-10-02`
+
+## License
+
+LAB code is currently **all rights reserved**. A public open-source license should be selected before any public release or registry submission.
