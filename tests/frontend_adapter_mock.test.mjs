@@ -139,7 +139,11 @@ async function loadFrontendHarness() {
     },
   };
   const app = {
-    canvas: { selectedItems: new Set(), selected_nodes: {} },
+    canvas: {
+      selectedItems: new Set(),
+      selected_nodes: {},
+      selectItems(items) { this.selectedItems = new Set(items); },
+    },
     registerExtension(ext) {
       extensions.push(ext);
       ext.setup?.();
@@ -295,6 +299,76 @@ test('multiple controllers warn on overlap but do not mutate unbound targets', a
     // Invoke the public stage state through the UI-equivalent core action by dispatching state render is already covered.
     c1.render();
     assert.equal(b.mode, 0);
+  } finally {
+    await h.cleanup();
+  }
+});
+
+
+test('Bind Selected does not reuse a stale previous selection', async () => {
+  const h = await loadFrontendHarness();
+  try {
+    const Stage = h.registered.get('Universal Workflow Controller/Stage Controller');
+    const graph = new FakeGraph();
+    const a = graph.add(basicNode(501, 0));
+    const ctl = graph.add(new Stage());
+    const ea = ctl.addEntry('Stage');
+    const eb = ctl.addEntry('Stage');
+
+    h.app.canvas.selectedItems = new Set([a]);
+    ctl.captureSelectionSnapshot();
+    assert.equal(ctl.bind(ea), true);
+    assert.deepEqual(ea.targets, [501]);
+
+    h.app.canvas.selectedItems = new Set();
+    ctl.captureSelectionSnapshot();
+    assert.equal(ctl.bind(eb), false);
+    assert.deepEqual(eb.targets, []);
+  } finally {
+    await h.cleanup();
+  }
+});
+
+test('same-controller duplicate binding is blocked before mutation', async () => {
+  const h = await loadFrontendHarness();
+  try {
+    const Stage = h.registered.get('Universal Workflow Controller/Stage Controller');
+    const graph = new FakeGraph();
+    const a = graph.add(basicNode(601, 0));
+    a.title = 'Target A';
+    const ctl = graph.add(new Stage());
+    const ea = ctl.addEntry('Stage'); ea.label = 'A';
+    const eb = ctl.addEntry('Stage'); eb.label = 'B';
+
+    h.app.canvas.selectedItems = new Set([a]);
+    ctl.captureSelectionSnapshot();
+    assert.equal(ctl.bind(ea), true);
+
+    h.app.canvas.selectedItems = new Set([a]);
+    ctl.captureSelectionSnapshot();
+    assert.equal(ctl.bind(eb), false);
+    assert.deepEqual(ea.targets, [601]);
+    assert.deepEqual(eb.targets, []);
+  } finally {
+    await h.cleanup();
+  }
+});
+
+test('Select Bound selects exactly the live targets for that entry', async () => {
+  const h = await loadFrontendHarness();
+  try {
+    const Stage = h.registered.get('Universal Workflow Controller/Stage Controller');
+    const graph = new FakeGraph();
+    const a = graph.add(basicNode(701, 0));
+    const b = graph.add(basicNode(702, 0));
+    const c = graph.add(basicNode(703, 0));
+    const ctl = graph.add(new Stage());
+    const e = ctl.addEntry('Stage');
+    e.targets = [a.id, c.id];
+
+    h.app.canvas.selectedItems = new Set([b]);
+    assert.equal(ctl.selectBound(e), true);
+    assert.deepEqual([...h.app.canvas.selectedItems].map((n) => n.id).sort(), [701, 703]);
   } finally {
     await h.cleanup();
   }
