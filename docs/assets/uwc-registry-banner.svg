@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="600" viewBox="0 0 1400 600">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#111318"/>
+      <stop offset="1" stop-color="#1b1f27"/>
+    </linearGradient>
+    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse">
+      <path d="M28 0H0V28" fill="none" stroke="#2a2f38" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1400" height="600" rx="30" fill="url(#bg)"/>
+  <rect width="1400" height="600" rx="30" fill="url(#grid)" opacity=".72"/>
+  <text x="72" y="90" fill="#f5f7fb" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="48" font-weight="700">Universal Workflow Controller</text>
+  <text x="74" y="132" fill="#a8b0bf" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22">Model-agnostic workflow control for ComfyUI Nodes 2.0</text>
+
+  <rect x="72" y="178" width="606" height="338" rx="22" fill="#24272d" stroke="#454b56" stroke-width="2"/>
+  <text x="102" y="220" fill="#ffffff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="700">Universal Stage Controller</text>
+  <rect x="102" y="248" width="124" height="44" rx="11" fill="#173d29" stroke="#45c977"/>
+  <text x="140" y="277" fill="#8ff0ae" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700">ON</text>
+  <text x="246" y="277" fill="#f4f5f7" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20">Facade</text>
+  <rect x="102" y="316" width="124" height="44" rx="11" fill="#3a1d43" stroke="#d675ec"/>
+  <text x="114" y="345" fill="#eca0ff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="700">BYPASSED</text>
+  <text x="246" y="345" fill="#f4f5f7" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20">Road</text>
+  <rect x="102" y="384" width="124" height="44" rx="11" fill="#22262b" stroke="#727985"/>
+  <text x="125" y="413" fill="#c3c8cf" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="700">MUTED</text>
+  <text x="246" y="413" fill="#f4f5f7" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20">Greenery</text>
+  <text x="102" y="474" fill="#8ea0b7" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18">Bind Selected · SOLO · RESTORE · Clean Missing</text>
+
+  <rect x="722" y="178" width="606" height="338" rx="22" fill="#24272d" stroke="#454b56" stroke-width="2"/>
+  <text x="752" y="220" fill="#ffffff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="700">Universal Exclusive Switch</text>
+  <circle cx="782" cy="277" r="12" fill="#4ea1ff"/>
+  <circle cx="782" cy="277" r="6" fill="#1b2635"/>
+  <text x="810" y="284" fill="#8ff0ae" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="700">ON</text>
+  <text x="874" y="284" fill="#f4f5f7" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20">Qwen branch</text>
+  <circle cx="782" cy="349" r="12" fill="none" stroke="#7d8490" stroke-width="2"/>
+  <text x="810" y="356" fill="#eca0ff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="700">BYPASSED</text>
+  <text x="936" y="356" fill="#f4f5f7" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20">Flux branch</text>
+  <circle cx="782" cy="421" r="12" fill="none" stroke="#7d8490" stroke-width="2"/>
+  <text x="810" y="428" fill="#c3c8cf" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="700">MUTED</text>
+  <text x="894" y="428" fill="#f4f5f7" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20">SDXL branch</text>
+  <text x="752" y="474" fill="#8ea0b7" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18">Exactly one active · user-defined options</text>
+
+  <text x="72" y="560" fill="#6f7d90" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18">OVizLAB · MIT · TESTED on real ComfyUI Nodes 2.0</text>
+</svg>

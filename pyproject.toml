@@ -1,0 +1,32 @@
+[project]
+name = "universal-workflow-controller"
+version = "0.1.1"
+description = "Model-agnostic workflow controllers for ComfyUI Nodes 2.0: bind arbitrary nodes, use Mute/Bypass, Solo/Restore, and switch exclusive workflow branches."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.9"
+dependencies = []
+authors = [
+  { name = "OVizLAB" }
+]
+keywords = [
+  "comfyui",
+  "workflow-controller",
+  "nodes-2-0",
+  "frontend-extension"
+]
+classifiers = [
+  "Operating System :: OS Independent",
+  "License :: OSI Approved :: MIT License"
+]
+
+[project.urls]
+Repository = "https://github.com/lutiy-dev/ComfyUI-Universal-Workflow-Controller"
+Documentation = "https://github.com/lutiy-dev/ComfyUI-Universal-Workflow-Controller#readme"
+Issues = "https://github.com/lutiy-dev/ComfyUI-Universal-Workflow-Controller/issues"
+
+[tool.comfy]
+PublisherId = "ovizlab"
+DisplayName = "Universal Workflow Controller"
+Icon = "https://raw.githubusercontent.com/lutiy-dev/ComfyUI-Universal-Workflow-Controller/main/docs/assets/uwc-icon.svg"
+Banner = "https://raw.githubusercontent.com/lutiy-dev/ComfyUI-Universal-Workflow-Controller/main/docs/assets/uwc-registry-banner.svg"

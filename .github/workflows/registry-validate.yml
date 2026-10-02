@@ -1,0 +1,40 @@
+name: Registry Validate
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "pyproject.toml"
+      - ".comfyignore"
+      - "__init__.py"
+      - "js/**"
+      - ".github/workflows/registry-validate.yml"
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate-registry-package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Comfy CLI
+        run: python -m pip install --upgrade comfy-cli
+
+      - name: Validate Registry package
+        run: comfy --skip-prompt node validate
+
+      - name: Pack Registry archive
+        run: comfy --skip-prompt node pack

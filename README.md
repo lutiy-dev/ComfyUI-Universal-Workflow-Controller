@@ -103,7 +103,13 @@ Static validation covers JavaScript syntax and Python shim compilation.
 
 Primary source of truth: `main`
 
-Current tested package: `v0.1.1-lab`
+Current tested package: `v0.1.1`
+
+## Developer
+
+**OVizLAB** · GitHub: [@lutiy-dev](https://github.com/lutiy-dev)
+
+Registry metadata is prepared for publisher ID `ovizlab`. The publisher account must be created/confirmed in Comfy Registry before the first publish.
 
 ## License
 

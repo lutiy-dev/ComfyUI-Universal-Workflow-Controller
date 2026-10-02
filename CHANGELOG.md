@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.1-lab — 2026-10-02
+## 0.1.1 — 2026-10-02
 
 Runtime binding hardening after first real Nodes 2.0 acceptance test.
 
@@ -36,4 +36,3 @@ Added:
 Deferred:
 - automatic Queue/Run;
 - deep cross-subgraph binding;
-- public release/registry packaging.
