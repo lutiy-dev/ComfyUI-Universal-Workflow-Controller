@@ -2,6 +2,12 @@
 
 ## 0.1.1 — 2026-10-02
 
+Public release / distribution:
+- GitHub Release `v0.1.1` published;
+- Comfy Registry publish PASS under publisher `ovizlab`;
+- MIT License active;
+- release marking follows the evidence-based status rule: publication != STABLE.
+
 Runtime binding hardening after first real Nodes 2.0 acceptance test.
 
 Fixed / improved:
