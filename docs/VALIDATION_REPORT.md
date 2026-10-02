@@ -241,3 +241,22 @@ Retest 0.1.1 on the user's current ComfyUI / current frontend / Nodes 2.0 before
 - v0.1.1 binds targets in the controller's current graph. A selected subgraph container can be controlled as a shallow target; deep cross-graph binding to nodes inside another subgraph is not claimed.
 - Automatic Queue/Run is intentionally deferred until base control behavior passes real runtime acceptance.
 - Cross-controller overlapping bindings are warned; no ownership layer is invented.
+
+
+## Distribution acceptance
+
+Date: 2026-10-02
+
+Confirmed:
+- Comfy Registry validate: PASS;
+- Comfy Registry pack: PASS;
+- Comfy Registry publish: PASS;
+- GitHub Release v0.1.1: PUBLISHED;
+- Publisher: OVizLAB / ovizlab;
+- License: MIT.
+
+Release/status rule:
+- GitHub release tag is the immutable version marker for a published package snapshot.
+- Registry version must match the GitHub release version.
+- LAB / VALIDATED / TESTED / STABLE are evidence states, not marketing labels.
+- Publishing to GitHub or Registry does not automatically mean STABLE.
