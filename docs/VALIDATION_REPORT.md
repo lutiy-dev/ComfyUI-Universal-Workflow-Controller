@@ -6,7 +6,7 @@ Date: 2026-10-02
 
 - GENERATED: PASS
 - VALIDATED: PASS
-- REAL NODES 2.0 RUNTIME: PARTIAL — Stage Controller PASS; Exclusive Switch PASS; save/reopen PASS; workflow-tab switching PASS; missing-target acceptance pending
+- REAL NODES 2.0 RUNTIME: PARTIAL — Stage Controller PASS; Exclusive Switch PASS; save/reopen PASS; workflow-tab switching PASS; missing-target detection PASS; Clean Missing confirmation pending
 - FIX FOR RUNTIME ISSUE: IMPLEMENTED + CI VALIDATED
 - RETEST OF 0.1.1 STAGE CONTROLLER: PASS
 - STABLE: NO (LAB)
@@ -181,6 +181,25 @@ Confirmed PASS:
 - no rebinding or state loss observed.
 
 Workflow-tab persistence status: **PASS**.
+
+## Real Nodes 2.0 runtime acceptance — Missing target detection
+
+Date: 2026-10-02
+
+Observed after deleting the node bound to Exclusive Switch option E.
+
+Confirmed PASS:
+- option E changed to BROKEN;
+- valid/total binding display changed to 0/1;
+- missing count displayed as 1 missing;
+- Clean Missing became available;
+- D retained its BYPASSED state and binding;
+- F retained its ON state and binding;
+- no silent rebinding occurred.
+
+Missing-target detection status: **PASS**.
+
+Clean Missing mutation test: pending user confirmation.
 
 ## Node search focus observation
 
