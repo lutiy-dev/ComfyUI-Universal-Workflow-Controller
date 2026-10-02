@@ -74,7 +74,7 @@ See [START_HERE.md](START_HERE.md).
 
 ## Current validation status
 
-Automated pure-logic tests cover:
+Automated validation includes **20 passing tests**: pure core logic plus a mocked current-frontend adapter harness. Coverage includes:
 - binding deduplication;
 - missing targets;
 - ON/OFF;
@@ -87,6 +87,8 @@ Automated pure-logic tests cover:
 - deterministic selected-entry precedence on overlap;
 - configuration JSON round-trip;
 - multi-controller isolation for non-overlapping bindings.
+
+The frontend adapter mock also verifies custom-node registration/rendering, Bind Selected, Stage SOLO/Restore persistence, Exclusive switching, Clean Missing cancellation safety, and cross-controller overlap diagnostics.
 
 Static validation covers JavaScript syntax and Python shim compilation.
 

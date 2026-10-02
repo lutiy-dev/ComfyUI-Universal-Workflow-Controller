@@ -23,7 +23,9 @@ Expected:
 
 ## Automated coverage
 
-Current tests cover:
+Current suite: **20 tests PASS** locally. It covers pure core logic plus a mocked frontend adapter.
+
+Coverage includes:
 - target ID sanitization and deduplication;
 - malformed configuration normalization;
 - rebind semantics;
@@ -41,7 +43,12 @@ Current tests cover:
 - overlap detection;
 - reorder;
 - JSON configuration round-trip;
-- isolation for non-overlapping controllers.
+- isolation for non-overlapping controllers;
+- frontend custom-node registration and render path;
+- Bind Selected through mocked current canvas selection;
+- frontend serialization/configure round-trip;
+- Clean Missing cancel/confirm safety;
+- cross-controller overlap diagnostics.
 
 ## Static policy checks
 

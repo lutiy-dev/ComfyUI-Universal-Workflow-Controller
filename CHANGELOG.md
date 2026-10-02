@@ -18,6 +18,7 @@ Added:
 - workflow-local persistence;
 - current-selection memory for reliable binding UX;
 - pure-core automated tests;
+- mocked frontend-adapter integration tests;
 - install/test documentation.
 
 Deferred:
