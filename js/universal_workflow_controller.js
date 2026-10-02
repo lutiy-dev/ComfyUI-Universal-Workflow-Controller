@@ -1,11 +1,13 @@
 import { app } from "../../../scripts/app.js";
 import {
+  MODES,
   DISABLE_MODES,
   cloneJson,
   makeConfig,
   makeEntry,
   normalizeConfig,
   entryHealth,
+  resolveEntry,
   findOverlaps,
   replaceTargets,
   moveEntry,
@@ -22,7 +24,6 @@ const CONFIG_KEY = "uwc_controller_v1";
 const MARKER = "__uwcControllerV1";
 const PANEL_WIDGET_NAME = "uwc_panel_v1";
 const CONTROLLERS = new Set();
-const SELECTION_MEMORY = new WeakMap();
 let globalHooksInstalled = false;
 let healthTimer = null;
 
@@ -47,7 +48,8 @@ function injectStyles() {
     .uwc-select { padding:2px 5px; }
     .uwc-state { font-weight:700; min-width:64px; }
     .uwc-on { border-color:rgba(83,190,112,.8); color:#9ee7ae; }
-    .uwc-off { border-color:rgba(140,140,140,.5); color:#bbb; }
+    .uwc-off, .uwc-muted { border-color:rgba(140,140,140,.5); color:#bbb; }
+    .uwc-bypass { border-color:rgba(211,93,226,.75); color:#eab0f3; }
     .uwc-mixed { border-color:rgba(230,185,72,.75); color:#f2cf70; }
     .uwc-broken { border-color:rgba(232,91,91,.8); color:#ff9d9d; }
     .uwc-active { outline:1px solid rgba(94,168,255,.85); }
@@ -93,36 +95,59 @@ function currentSelectedNodes() {
   return out;
 }
 
-function rememberSelection() {
-  const nodes = currentSelectedNodes();
-  if (!nodes.length) return;
-  const byGraph = new Map();
-  for (const node of nodes) {
-    const graph = node.graph;
-    if (!graph) continue;
-    if (!byGraph.has(graph)) byGraph.set(graph, []);
-    byGraph.get(graph).push(node.id);
-  }
-  for (const [graph, ids] of byGraph) SELECTION_MEMORY.set(graph, ids);
+function selectedNodesForGraph(graph, controller = null) {
+  if (!graph) return [];
+  return currentSelectedNodes().filter((node) => node.graph === graph && node !== controller);
 }
 
-function selectedIdsForController(controller) {
-  const graph = controller.graph;
-  if (!graph) return [];
-  const current = currentSelectedNodes().filter((n) => n.graph === graph && n !== controller);
-  if (current.length) return current.map((n) => n.id);
+function nodeDisplayName(node) {
+  if (!node) return "<missing>";
+  const title = String(node.title ?? "").trim();
+  if (title) return title;
+  const type = String(node.type ?? "").trim();
+  if (type) return type;
+  return `Node #${String(node.id)}`;
+}
 
-  const remembered = SELECTION_MEMORY.get(graph) ?? [];
-  return remembered.filter((id) => !!graph.getNodeById?.(id));
+function runtimeState(graph, entry) {
+  const health = entryHealth(graph, entry);
+  if (health.total === 0) return { ...health, label: "UNBOUND" };
+  if (health.valid === 0) return { ...health, label: "BROKEN" };
+
+  const modes = new Set(health.validNodes.map((node) => node.mode));
+  let label = "MIXED";
+  if (modes.size === 1) {
+    const [mode] = modes;
+    if (mode === MODES.ALWAYS) label = "ON";
+    else if (mode === MODES.NEVER) label = "MUTED";
+    else if (mode === MODES.BYPASS) label = "BYPASSED";
+  }
+  if (health.missing > 0) label = `PARTIAL ${label}`;
+  return { ...health, label };
+}
+
+function runtimeSignature(graph, entry) {
+  const { valid, missing } = resolveEntry(graph, entry);
+  const modeSig = valid.map((node) => `${typeof node.id}:${String(node.id)}=${String(node.mode)}`).join(",");
+  return `${entry.id}|${modeSig}|missing:${missing.map(String).join(",")}`;
+}
+
+function targetSummary(graph, entry, maxNames = 2) {
+  const { valid, missing } = resolveEntry(graph, entry);
+  const names = valid.slice(0, maxNames).map(nodeDisplayName);
+  let short = names.join(", ");
+  if (valid.length > maxNames) short += ` +${valid.length - maxNames}`;
+  if (!short && missing.length) short = `${missing.length} missing`;
+  if (!short) short = "0 targets";
+
+  const fullParts = valid.map((node) => `${nodeDisplayName(node)} (#${String(node.id)})`);
+  fullParts.push(...missing.map((id) => `missing #${String(id)}`));
+  return { short, full: fullParts.join("\n") || "No bound targets" };
 }
 
 function installGlobalHooks() {
   if (globalHooksInstalled) return;
   globalHooksInstalled = true;
-
-  // Capture the selection BEFORE a click inside a controller can affect canvas selection.
-  document.addEventListener("pointerdown", rememberSelection, true);
-  document.addEventListener("keydown", rememberSelection, true);
 
   healthTimer = window.setInterval(() => {
     for (const controller of [...CONTROLLERS]) {
@@ -158,6 +183,8 @@ function modeSelect(value) {
 
 function stateClass(state) {
   if (state.includes("BROKEN")) return "uwc-broken";
+  if (state.includes("BYPASS")) return "uwc-bypass";
+  if (state.includes("MUTED")) return "uwc-muted";
   if (state.includes("MIXED")) return "uwc-mixed";
   if (state.includes("ON")) return "uwc-on";
   return "uwc-off";
@@ -173,6 +200,7 @@ class UWCBaseNode extends (globalThis.LGraphNode ?? globalThis.LiteGraph?.LGraph
     this._notice = null;
     this._noticeTimer = null;
     this._lastHealthSignature = "";
+    this._selectionSnapshot = [];
 
     this.properties ??= {};
     this._config = normalizeConfig(this.properties[CONFIG_KEY] ?? makeConfig(kind), kind);
@@ -180,7 +208,10 @@ class UWCBaseNode extends (globalThis.LGraphNode ?? globalThis.LiteGraph?.LGraph
 
     this._root = document.createElement("div");
     this._root.className = "uwc-root";
-    this._root.addEventListener("pointerdown", (event) => event.stopPropagation());
+    this._root.addEventListener("pointerdown", (event) => {
+      this.captureSelectionSnapshot();
+      event.stopPropagation();
+    });
     this._root.addEventListener("dblclick", (event) => event.stopPropagation());
     this._root.addEventListener("wheel", (event) => event.stopPropagation(), { passive: true });
 
@@ -259,16 +290,70 @@ class UWCBaseNode extends (globalThis.LGraphNode ?? globalThis.LiteGraph?.LGraph
     this.render();
   }
 
+  captureSelectionSnapshot() {
+    this._selectionSnapshot = selectedNodesForGraph(this.graph, this).map((node) => node.id);
+    return [...this._selectionSnapshot];
+  }
+
+  selectedIdsForBinding() {
+    if (!this.graph) return [];
+    const current = selectedNodesForGraph(this.graph, this).map((node) => node.id);
+    if (current.length) return current;
+    return (this._selectionSnapshot ?? []).filter((id) => !!this.graph.getNodeById?.(id));
+  }
+
+  sameControllerConflicts(entry, ids) {
+    const wanted = new Set(ids.map((id) => `${typeof id}:${String(id)}`));
+    const conflicts = [];
+    for (const other of this._config.entries) {
+      if (other.id === entry.id) continue;
+      const hit = (other.targets ?? []).filter((id) => wanted.has(`${typeof id}:${String(id)}`));
+      if (hit.length) conflicts.push({ entry: other, ids: hit });
+    }
+    return conflicts;
+  }
+
   bind(entry) {
-    const ids = selectedIdsForController(this);
+    const ids = this.selectedIdsForBinding();
     if (!ids.length) {
-      this.notice("No bindable nodes selected. Select target nodes/subgraph container, then Bind Selected.", true);
+      this.notice("Nothing selected. Select target nodes first, then click Bind Selected.", true);
       return false;
     }
+
+    const conflicts = this.sameControllerConflicts(entry, ids);
+    if (conflicts.length) {
+      const labels = [...new Set(conflicts.map((c) => c.entry.label))].join(", ");
+      this.notice(`Binding blocked: selected target is already bound to ${labels}. Clear/Rebind that entry first.`, true);
+      return false;
+    }
+
     replaceTargets(entry, ids);
+    this._selectionSnapshot = [];
     this.persist();
-    this.notice(`Bound ${ids.length} target${ids.length === 1 ? "" : "s"}.`);
+    const summary = targetSummary(this.graph, entry);
+    this.notice(`Bound: ${summary.short}.`);
     return true;
+  }
+
+  selectBound(entry) {
+    const { valid } = resolveEntry(this.graph, entry);
+    if (!valid.length) {
+      this.notice("No valid bound targets to select.", true);
+      return false;
+    }
+    const canvas = app?.canvas;
+    if (!canvas) return false;
+    try {
+      if (typeof canvas.selectItems === "function") canvas.selectItems(valid);
+      else canvas.selectedItems = new Set(valid);
+      this._selectionSnapshot = valid.map((node) => node.id);
+      this.notice(`Selected ${valid.length} bound target${valid.length === 1 ? "" : "s"}.`);
+      return true;
+    } catch (error) {
+      console.warn("[UWC] Select Bound failed", error);
+      this.notice("Select Bound is unavailable in this frontend build.", true);
+      return false;
+    }
   }
 
   rename(entry, value) {
@@ -384,10 +469,7 @@ class UWCBaseNode extends (globalThis.LGraphNode ?? globalThis.LiteGraph?.LGraph
 
   refreshHealth() {
     if (!this.graph || !this._config) return;
-    const sig = this._config.entries.map((e) => {
-      const h = entryHealth(this.graph, e);
-      return `${e.id}:${h.state}:${h.valid}:${h.missing}`;
-    }).join("|");
+    const sig = this._config.entries.map((e) => runtimeSignature(this.graph, e)).join("|");
     if (sig !== this._lastHealthSignature) {
       this._lastHealthSignature = sig;
       this.render();
@@ -418,6 +500,13 @@ class UWCBaseNode extends (globalThis.LGraphNode ?? globalThis.LiteGraph?.LGraph
 
   makeUtilityActions(entry, index, includeSolo = false) {
     const frag = document.createDocumentFragment();
+
+    const select = button("Select");
+    select.title = "Select the currently bound target nodes on the canvas.";
+    select.disabled = resolveEntry(this.graph, entry).valid.length === 0;
+    select.addEventListener("click", () => this.selectBound(entry));
+    frag.appendChild(select);
+
     if (includeSolo) {
       const solo = button("SOLO");
       solo.title = "Temporarily isolate this entry. RESTORE returns exact pre-solo modes.";
@@ -517,14 +606,15 @@ class UniversalStageController extends UWCBaseNode {
 
     this._config.entries.forEach((entry, index) => {
       const health = entryHealth(this.graph, entry);
+      const runtime = runtimeState(this.graph, entry);
       const card = document.createElement("div");
       card.className = `uwc-entry ${this._soloActiveId === entry.id ? "uwc-active" : ""}`;
 
       const main = document.createElement("div");
       main.className = "uwc-entry-main";
 
-      const state = button(health.state.replace("PARTIAL_", ""), `uwc-state ${stateClass(health.state)}`);
-      state.title = health.missing ? `${health.missing} target(s) are missing/deleted.` : "Toggle this stage ON/OFF.";
+      const state = button(runtime.label.replace("PARTIAL ", ""), `uwc-state ${stateClass(runtime.label)}`);
+      state.title = health.missing ? `${health.missing} target(s) are missing/deleted.` : "Actual current mode of the bound target(s). Click to toggle ON/OFF.";
       state.disabled = health.valid === 0;
       state.addEventListener("click", () => { toggleEntry(this.graph, entry); this.render(); });
 
@@ -540,7 +630,9 @@ class UniversalStageController extends UWCBaseNode {
       actions.appendChild(this.makeUtilityActions(entry, index, true));
       const meta = document.createElement("span");
       meta.className = "uwc-meta";
-      meta.textContent = health.missing ? `${health.missing} missing` : `${health.valid} target${health.valid === 1 ? "" : "s"}`;
+      const summary = targetSummary(this.graph, entry);
+      meta.textContent = summary.short;
+      meta.title = summary.full;
       actions.appendChild(meta);
 
       card.append(main, actions);
@@ -549,10 +641,7 @@ class UniversalStageController extends UWCBaseNode {
 
     root.style.setProperty("--comfy-widget-min-height", `${this.estimatedHeight()}px`);
     this.ensurePanelSize();
-    this._lastHealthSignature = this._config.entries.map((e) => {
-      const h = entryHealth(this.graph, e);
-      return `${e.id}:${h.state}:${h.valid}:${h.missing}`;
-    }).join("|");
+    this._lastHealthSignature = this._config.entries.map((e) => runtimeSignature(this.graph, e)).join("|");
     try { this.graph?.setDirtyCanvas?.(true, false); } catch {}
   }
 }
@@ -608,6 +697,7 @@ class UniversalExclusiveSwitch extends UWCBaseNode {
 
     this._config.entries.forEach((entry, index) => {
       const health = entryHealth(this.graph, entry);
+      const runtime = runtimeState(this.graph, entry);
       const card = document.createElement("div");
       card.className = `uwc-entry ${this._config.activeId === entry.id ? "uwc-active" : ""}`;
 
@@ -626,8 +716,8 @@ class UniversalExclusiveSwitch extends UWCBaseNode {
       radio.disabled = health.valid === 0;
       radio.addEventListener("change", () => { if (radio.checked) this.selectEntry(entry); });
       const stateText = document.createElement("span");
-      stateText.className = `uwc-meta ${stateClass(health.state)}`;
-      stateText.textContent = health.state.replace("PARTIAL_", "");
+      stateText.className = `uwc-meta ${stateClass(runtime.label)}`;
+      stateText.textContent = runtime.label.replace("PARTIAL ", "");
       chooseWrap.append(radio, stateText);
 
       const label = this.makeLabelInput(entry);
@@ -642,7 +732,9 @@ class UniversalExclusiveSwitch extends UWCBaseNode {
       actions.appendChild(this.makeUtilityActions(entry, index, false));
       const meta = document.createElement("span");
       meta.className = "uwc-meta";
-      meta.textContent = health.missing ? `${health.valid}/${health.total} valid · ${health.missing} missing` : `${health.valid} target${health.valid === 1 ? "" : "s"}`;
+      const summary = targetSummary(this.graph, entry);
+      meta.textContent = summary.short;
+      meta.title = summary.full;
       actions.appendChild(meta);
 
       card.append(main, actions);
@@ -651,10 +743,7 @@ class UniversalExclusiveSwitch extends UWCBaseNode {
 
     root.style.setProperty("--comfy-widget-min-height", `${this.estimatedHeight()}px`);
     this.ensurePanelSize();
-    this._lastHealthSignature = this._config.entries.map((e) => {
-      const h = entryHealth(this.graph, e);
-      return `${e.id}:${h.state}:${h.valid}:${h.missing}`;
-    }).join("|");
+    this._lastHealthSignature = this._config.entries.map((e) => runtimeSignature(this.graph, e)).join("|");
     try { this.graph?.setDirtyCanvas?.(true, false); } catch {}
   }
 }
