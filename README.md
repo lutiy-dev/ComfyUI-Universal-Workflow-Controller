@@ -1,6 +1,6 @@
 # ComfyUI Universal Workflow Controller
 
-**Status:** LAB / VALIDATED (not yet runtime-tested on the target ComfyUI install)
+**Status:** LAB / VALIDATED; first real Nodes 2.0 runtime test completed with a binding-UX issue, fixed in 0.1.1 and awaiting retest
 
 Universal, model-agnostic control nodes for ComfyUI workflows.
 
@@ -22,7 +22,8 @@ Per stage:
 - reorder;
 - clear binding;
 - remove entry;
-- target count and broken-binding status.
+- bound target names, target count, actual runtime state, and broken-binding status;
+- `Select` to visually reselect bound targets.
 
 Controller actions:
 - `+ Stage`;
@@ -66,7 +67,7 @@ The package:
 - changes only the `mode` of explicitly bound target nodes;
 - does not automatically Queue/Run workflows.
 
-Multiple controllers may coexist. Overlapping bindings are detected and shown as warnings. No ownership is invented: the last explicit user action wins.
+Multiple controllers may coexist. Same-controller duplicate bindings are blocked before mutation. Cross-controller overlaps are detected and shown as warnings; no ownership is invented.
 
 ## Installation
 
@@ -74,7 +75,7 @@ See [START_HERE.md](START_HERE.md).
 
 ## Current validation status
 
-Automated validation includes **20 passing tests**: pure core logic plus a mocked current-frontend adapter harness. Coverage includes:
+Automated validation includes **23 passing tests**: pure core logic plus a mocked current-frontend adapter harness. Coverage includes:
 - binding deduplication;
 - missing targets;
 - ON/OFF;
