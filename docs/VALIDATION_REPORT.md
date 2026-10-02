@@ -6,7 +6,7 @@ Date: 2026-10-02
 
 - GENERATED: PASS
 - VALIDATED: PASS
-- REAL NODES 2.0 RUNTIME: PARTIAL — Stage Controller PASS; Exclusive Switch PASS; save/reopen persistence PASS; missing-target/tab-switch acceptance pending
+- REAL NODES 2.0 RUNTIME: PARTIAL — Stage Controller PASS; Exclusive Switch PASS; save/reopen PASS; workflow-tab switching PASS; missing-target acceptance pending
 - FIX FOR RUNTIME ISSUE: IMPLEMENTED + CI VALIDATED
 - RETEST OF 0.1.1 STAGE CONTROLLER: PASS
 - STABLE: NO (LAB)
@@ -168,6 +168,19 @@ Confirmed PASS:
   - F = ON.
 
 Save / close / reopen persistence status: **PASS**.
+
+## Real Nodes 2.0 runtime acceptance — Workflow tab switching
+
+Date: 2026-10-02
+
+Observed after switching to another workflow tab and returning.
+
+Confirmed PASS:
+- Stage Controller labels/bindings/state remained intact;
+- Exclusive Switch labels/bindings/active option remained intact;
+- no rebinding or state loss observed.
+
+Workflow-tab persistence status: **PASS**.
 
 ## Node search focus observation
 
