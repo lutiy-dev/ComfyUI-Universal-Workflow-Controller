@@ -1,0 +1,36 @@
+name: LAB Validate
+
+on:
+  push:
+    branches:
+      - dev/universal-workflow-controller
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Static checks
+        run: npm run check
+
+      - name: Automated tests
+        run: npm test
