@@ -6,7 +6,7 @@ Date: 2026-10-02
 
 - GENERATED: PASS
 - VALIDATED: PASS
-- REAL NODES 2.0 RUNTIME: PARTIAL — Stage Controller core runtime PASS; remaining package acceptance pending
+- REAL NODES 2.0 RUNTIME: PARTIAL — Stage Controller core runtime PASS; Exclusive Switch core runtime PASS; persistence/missing-target acceptance pending
 - FIX FOR RUNTIME ISSUE: IMPLEMENTED + CI VALIDATED
 - RETEST OF 0.1.1 STAGE CONTROLLER: PASS
 - STABLE: NO (LAB)
@@ -126,6 +126,24 @@ Still required before package TESTED:
 - missing/deleted target handling + Clean Missing;
 - multi-controller isolation / overlap warning;
 - subgraph container acceptance if claimed.
+
+## Real Nodes 2.0 runtime acceptance — Exclusive Switch
+
+Date: 2026-10-02
+
+Observed on the user's current ComfyUI / Nodes 2.0 install.
+
+Confirmed PASS:
+- D/E/F bound independently with correct target labels;
+- Select Bound selects the expected D/E/F target;
+- explicit option selection enforces exactly one active branch;
+- inactive branches honor their own configured disable mode;
+- example runtime states observed:
+  - E active => E = ON, D = BYPASSED, F = MUTED;
+  - F active => F = ON, D = BYPASSED, E = MUTED;
+- no accidental mutation of unrelated Stage Controller bindings was observed in this test.
+
+Exclusive Switch core runtime status: **PASS**.
 
 ## Node search focus observation
 
