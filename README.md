@@ -99,6 +99,13 @@ Static validation covers JavaScript syntax and Python shim compilation.
 
 **Real ComfyUI Nodes 2.0 runtime acceptance: PASS for the tested core matrix.** Subgraph-container support remains outside the stable claim until its dedicated runtime test is completed.
 
+## Release
+
+**GitHub Release:** [v0.1.1](https://github.com/lutiy-dev/ComfyUI-Universal-Workflow-Controller/releases/tag/v0.1.1)  
+**Comfy Registry:** published as `universal-workflow-controller` by `@ovizlab`.
+
+Release status: **TESTED** for the documented core Nodes 2.0 acceptance matrix. Registry publication does not by itself promote a package to STABLE; subgraph-container support remains outside the STABLE claim until dedicated runtime acceptance is completed.
+
 ## Repository state
 
 Primary source of truth: `main`
