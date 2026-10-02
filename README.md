@@ -111,6 +111,19 @@ Current tested package: `v0.1.1`
 
 Registry metadata is prepared for publisher ID `ovizlab`. The publisher account must be created/confirmed in Comfy Registry before the first publish.
 
+## Comfy Registry publishing
+
+Registry metadata is prepared for publisher ID `ovizlab`.
+
+Publishing is intentionally **manual-only**:
+1. Create/confirm publisher `ovizlab` on Comfy Registry.
+2. Create a Registry API key.
+3. Add it to this repository as the Actions secret `REGISTRY_ACCESS_TOKEN`.
+4. Run **Actions → Publish to Comfy Registry → Run workflow**.
+5. The workflow runs static checks, automated tests and `comfy node validate` before publishing.
+
+Do not commit Registry keys to the repository.
+
 ## License
 
 Released under the **MIT License**. See [LICENSE](LICENSE).
