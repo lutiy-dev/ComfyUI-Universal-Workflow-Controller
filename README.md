@@ -107,4 +107,4 @@ Current tested package: `v0.1.1-lab`
 
 ## License
 
-LAB code is currently **all rights reserved**. A public open-source license should be selected before any public release or registry submission.
+Released under the **MIT License**. See [LICENSE](LICENSE).
