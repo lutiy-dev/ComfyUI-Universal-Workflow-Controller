@@ -6,10 +6,11 @@ Date: 2026-10-02
 
 - GENERATED: PASS
 - VALIDATED: PASS
-- REAL NODES 2.0 RUNTIME: PARTIAL — Stage Controller PASS; Exclusive Switch PASS; save/reopen PASS; workflow-tab switching PASS; missing-target detection PASS; Clean Missing confirmation pending
+- REAL NODES 2.0 RUNTIME: PASS for the tested Nodes 2.0 acceptance matrix
 - FIX FOR RUNTIME ISSUE: IMPLEMENTED + CI VALIDATED
 - RETEST OF 0.1.1 STAGE CONTROLLER: PASS
-- STABLE: NO (LAB)
+- TESTED: PASS on the user's real current ComfyUI / Nodes 2.0 install
+- STABLE: NO — remains LAB until subgraph-container support is runtime-tested or explicitly excluded from the stable claim
 
 ## Runtime finding that triggered 0.1.1
 
@@ -200,6 +201,24 @@ Confirmed PASS:
 Missing-target detection status: **PASS**.
 
 Clean Missing mutation test: pending user confirmation.
+
+## Real Nodes 2.0 runtime acceptance — Clean Missing
+
+Date: 2026-10-02
+
+Observed after a bound target was deleted and the controller's top-level `Clean Missing` action was used.
+
+Confirmed PASS:
+- the entry remained in the controller;
+- the stale target reference was removed;
+- the entry became UNBOUND;
+- binding health became 0/0 with 0 targets;
+- unrelated entries remained unchanged:
+  - D = BYPASSED with its binding intact;
+  - F = ON with its binding intact;
+- no silent rebinding occurred.
+
+Clean Missing mutation status: **PASS**.
 
 ## Node search focus observation
 
